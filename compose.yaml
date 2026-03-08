@@ -1,0 +1,5 @@
+services:
+  redis:
+    build:
+      context: valkey
+    container_name: valkey
