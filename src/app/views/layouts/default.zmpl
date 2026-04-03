@@ -21,7 +21,7 @@
         <span class="logo">Zecrets</span>
         <div class="nav-right">
             <a>About</a>
-            <a>Source</a>
+            <a href="https://github.com/AldanariP/zecrets.git" target="_blank">Source</a>
         </div>
     </nav>
     {{zmpl.content}}
