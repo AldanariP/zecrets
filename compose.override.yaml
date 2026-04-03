@@ -1,0 +1,4 @@
+services:
+  valkey:
+    expose:
+      - "6379"

@@ -35,7 +35,7 @@ branch of Jetzig, use other versions of at your own risk (CLI tool is not requir
 To run the entire stack (Server + Valkey) using Docker Compose:
 
 ```bash
-docker compose up --build -d
+docker compose -f compose.yaml -f compose.prod.yaml up --build -d
 ```
 
 The server will be reachable at `http://localhost:8080`.

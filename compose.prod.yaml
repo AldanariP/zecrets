@@ -1,0 +1,4 @@
+services:
+  valkey:
+    environment:
+      - VALKEY_EXRTA_FLAGS=--bind valkey --log-level info
