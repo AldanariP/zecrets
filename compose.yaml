@@ -1,5 +1,18 @@
 services:
-  redis:
+  valkey:
+    image: valkey/valkey:9.0.3-alpine
+    container_name: zecrets-valkey
+    environment:
+      - VALKEY_EXRTA_FLAGS=--bind valkey --log-level info
+
+  server:
     build:
-      context: valkey
-    container_name: valkey
+      dockerfile: "DockerfileJETZIG"
+    container_name: zecrets-jetzig
+    environment:
+      - JETZIG_ENV=production
+    ports:
+      - "8080:8080"
+    env_file: ".env"
+    depends_on:
+      - valkey

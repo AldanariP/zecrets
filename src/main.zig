@@ -14,6 +14,7 @@ pub const jetzig_options = struct {
         .backend = .valkey,
         .valkey_options = .{
             .connect = .auto,
+            .host = "valkey",
         }
     };
 };
