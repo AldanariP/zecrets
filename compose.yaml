@@ -6,8 +6,7 @@ services:
       - VALKEY_EXRTA_FLAGS=--bind valkey --log-level info
 
   server:
-    build:
-      dockerfile: "DockerfileJETZIG"
+    build: .
     container_name: zecrets-jetzig
     environment:
       - JETZIG_ENV=production
