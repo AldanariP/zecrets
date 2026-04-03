@@ -22,9 +22,10 @@ branch of Jetzig, use other versions of at your own risk (CLI tool is not requir
 
 2. **Run the Jetzig server**:
    ```bash
-   zig build run
-   # or
+   # Preferred way as it provides hot-reloading
    jetzig server
+   # or if you don't have the Jetzig CLI tool installed
+   zig build run
    # or
    zig build && ./zig-out/bin/zecrets
    ```
