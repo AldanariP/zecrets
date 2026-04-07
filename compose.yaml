@@ -2,6 +2,7 @@ services:
   valkey:
     image: valkey/valkey:9.0.3-alpine
     container_name: zecrets-valkey
+    restart: on-failure:3
 
   server:
     build: .
@@ -9,5 +10,6 @@ services:
     ports:
       - "8080:8080"
     env_file: ".env"
+    restart: on-failure:5
     depends_on:
       - valkey
