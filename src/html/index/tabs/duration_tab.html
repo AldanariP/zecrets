@@ -1,0 +1,41 @@
+<div id="tabs" class="tabs" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" data-on:click="@get('/tabs/duration')">Duration</button>
+    <button class="tab" role="tab" aria-selected="false" data-on:click="@get('/tabs/date')">Until date</button>
+</div>
+<div id="tabpannel" class="card-inner" role="tabpanel">
+    <div class="picker">
+        <div class="dur-group">
+            <div class="dur-field">
+                <input
+                        type="number"
+                        id="dur-min"
+                        min="0" max="59" value="0" placeholder="00"
+                        data-bind:minutes
+                >
+                <span class="dur-label">min</span>
+            </div>
+            <span class="dur-sep">+</span>
+            <div class="dur-field">
+                <input
+                        type="number"
+                        id="dur-hr"
+                        min="0" max="8760" value="24" placeholder="00"
+                        data-bind:hours
+                >
+                <span class="dur-label">hr</span>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="gen-card" class="card-inner">
+    <button id="btn-gen" class="btn-gen"
+            data-signals="{ciphertext: '', iv: '', _key: ''}"
+            data-on:click="encryptSecret(el, $_secret)"
+            data-on:secretready="
+                $ciphertext = evt.detail.ciphertext;
+                $iv = evt.detail.iv;
+                $_key = evt.detail.key;
+                @post('/secret/duration');
+            "
+    >Generate link</button>
+</div>

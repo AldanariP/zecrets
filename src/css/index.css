@@ -1,10 +1,3 @@
-#form-card {
-    &.open {
-        height: 200px;
-        padding: 0;
-    }
-}
-
 #link-card {
     width: 100%;
     display: flex;
@@ -38,7 +31,7 @@
 .tabs {
     display: grid;
     grid-template-columns:1fr 1fr;
-    border-bottom: var(--line);
+    border-top: var(--line);
 
     .tab {
         font-family: var(--mono) sans-serif;
@@ -56,7 +49,7 @@
             border-right: none;
         }
 
-        &.active {
+        &[aria-selected="true"] {
             background: var(--white);
             color: var(--black);
         }
@@ -64,12 +57,10 @@
 }
 
 .picker {
-    display: none;
+    display: flex;
     align-items: center;
     gap: 0;
     padding: 12px 16px;
-
-    &.active { display: flex; }
 
     .dur-group {
         display: flex;
@@ -128,8 +119,7 @@ input[type=date], input[type=time] {
 }
 
 .firstview {
-    padding: 10px 16px;
-    border-top: var(--line);
+    min-height: 5px;
 
     label {
         letter-spacing: .12em;
@@ -137,7 +127,7 @@ input[type=date], input[type=time] {
         color: var(--dim);
         cursor: pointer;
         user-select: none;
-        display: flex;
+        display: flex !important;
         align-items: center;
         gap: 10px;
     }

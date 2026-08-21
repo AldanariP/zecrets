@@ -1,38 +1,57 @@
 const std = @import("std");
 const builtin = @import("builtin");
+const httpz = @import("httpz");
 
-const jetzig = @import("jetzig");
+const Store = @import("Store.zig");
+const LoggerMiddleware = @import("LoggerMiddleware.zig");
 
-pub const routes = @import("routes");
-pub const static = @import("static");
+const router_static = @import("router-static.zig");
+const router_secrets = @import("router-secrets.zig");
 
-pub const jetzig_options = struct {
-    pub const public_content_path = "public";
-    pub const public_routing_path = "/";
 
-    pub const store: jetzig.kv.Store.KVOptions = .{
-        .backend = .valkey,
-        .valkey_options = .{
-            .connect = .auto,
-            .host = switch (jetzig.environment) {
-                .production => "valkey",
-                else => "localhost"
-            },
-        }
-    };
+pub const App = struct {
+    store: Store
 };
 
-pub fn init(app: *jetzig.App) !void {
-    _ = app;
-}
+pub fn main(init: std.process.Init) !void {
+    const alloc = init.gpa;
 
-pub fn main() !void {
-    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    const allocator = if (builtin.mode == .Debug) gpa.allocator() else std.heap.c_allocator;
-    defer if (builtin.mode == .Debug) std.debug.assert(gpa.deinit() == .ok);
+    var app: App = .{ .store = try .init(alloc) };
+    defer app.store.deinit();
 
-    var app = try jetzig.init(allocator);
-    defer app.deinit();
+    var port: u16 = 3000;
 
-    try app.start(routes, .{});
+    const maybe_port_string = init.environ_map.get("port");
+    if (maybe_port_string) |port_string| {
+        port = std.fmt.parseUnsigned(u16, port_string, 10) catch blk: {
+            std.log.warn("Invalid port: \"{s}\", defaulting to 3000", .{port_string});
+            break :blk 3000;
+        };
+    }
+
+    var server: httpz.Server(*App) = try .init(init.io, alloc, .{
+        .address = .all(port)
+    }, &app);
+    defer { server.stop(); server.deinit(); }
+
+    const logger = try server.middleware(LoggerMiddleware, .{ .io = init.io });
+
+    var router = try server.router(.{});
+
+    router.middlewares = &.{ logger };
+
+    router.get("/", router_static.index, .{});
+    router.get("/style.css", router_static.indexStyle, .{});
+    router.get("/favicon.ico", router_static.favicon, .{});
+    router.get("/form", router_static.form, .{});
+    router.get("/tabs/duration", router_static.tabDuration, .{});
+    router.get("/tabs/date", router_static.tabDate, .{});
+
+    router.post("/secret/duration", router_secrets.secretByDuration, .{});
+    router.post("/secret/date", router_secrets.secretByDate, .{});
+    router.get("/secret/:id", router_secrets.getSecret, .{});
+    router.delete("/secret/:id", router_secrets.burnSecret, .{});
+
+    std.log.info("Listening on http://localhost:{}", .{port});
+    try server.listen();
 }

@@ -5,19 +5,29 @@ pub fn build(b: *std.Build) !void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
+    const datastar = b.dependency("datastar", .{
+        .target = target,
+        .optimize = optimize
+    });
+
+    const httpz = b.dependency("httpz", .{
+        .target = target,
+        .optimize = optimize
+    });
+
     const exe = b.addExecutable(.{
         .name = "zecrets",
         .root_module = b.createModule(.{
             .root_source_file = b.path("src/main.zig"),
             .target = target,
             .optimize = optimize,
-            .imports = &.{},
+            .imports = &.{
+                .{ .name = "datastar", .module = datastar.module("datastar") },
+                .{ .name = "httpz", .module = httpz.module("httpz") },
+            },
         }),
+        .linkage = .static
     });
-
-    // ^ Add all dependencies before `jetzig.jetzigInit()` ^
-
-    try jetzig.jetzigInit(b, exe, .{ });
 
     b.installArtifact(exe);
 

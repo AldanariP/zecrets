@@ -1,49 +1,35 @@
 # Zecrets
 
-Zecrets is a secure, ephemeral secret-sharing application built on a zero-knowledge architecture 
-with [Zig](https://ziglang.org/) and the [Jetzig](https://jetzig.dev/) web framework.
-It allows users to share encrypted secrets that can be configured to expire after a certain time or after a single read.
+Zecrets is a secure, ephemeral secret-sharing application built on a zero-knowledge architecture
+with [Zig](https://ziglang.org/) and the [Datastar](https://data-star.dev/) web framework and
+[http.zig](https://github.com/karlseguin/http.zig) as the HTTP server.
+It allows users to share encrypted secrets that can be configured to expire after a certain time, at a certain date and after a single read.
 
 ## Requirements
 
-- **Zig**: Version `0.15.2` (Recommended to use [zvm](https://github.com/tristanisham/zvm) for version management).
-- **Jetzig ([Download](https://www.jetzig.dev/downloads))**: The app was developped using the CLI tool built from the ``zig-0.15``
-branch of Jetzig, use other versions of at your own risk (CLI tool is not required for development).
-- **Docker & Docker Compose**: For containerized deployment.
+- **Zig**: Version `0.16.0`
+- **~~Docker & Docker Compose~~ Podman (see [issue#36278](https://codeberg.org/ziglang/zig/issues/36278))**: For containerized deployment.
 
 ## Running the Application
 
 ### Development Mode
 
-1. **Start Valkey**:
+**Run the server**:
    ```bash
-   docker compose up valkey -d
-   ```
-
-2. **Run the Jetzig server**:
-   ```bash
-   # Preferred way as it provides hot-reloading
-   jetzig server
-   # or if you don't have the Jetzig CLI tool installed
    zig build run
-   # or
-   zig build && ./zig-out/bin/zecrets
    ```
-   The application will be available at `http://localhost:8080`.
+   The application will be available at `http://localhost:3000` by default.
 
-### Production Mode (Docker)
+### Production Mode (Containerized)
 
-To run the entire stack (Server + Valkey) using Docker Compose:
+To run the server using podman:
 
 ```bash
-docker compose -f compose.yaml -f compose.prod.yaml up --build -d
+podman compose up --build -d
 ```
-
-The server will be reachable at `http://localhost:8080`.
-> Note: The Jetzig container needs to have access to an ``.env`` file containing the `JETZIG_SECRET` environment variable,
-> use the ``jetzig generate secret`` command to generate a random secret string.
+> Note: The port can be changed by setting the `PORT` environment variable.
 
 ## TODOs
 
-- [ ] Add How-it-works page, About page and Source link.
+- [ ] Add How-it-works page, About page.
 - [ ] Add custom 404 page for burned secrets.

@@ -1,0 +1,30 @@
+<div id="tabs" class="tabs" role="tablist">
+    <button class="tab" role="tab" aria-selected="false" data-on:click="@get('/tabs/duration')">Duration</button>
+    <button class="tab" role="tab" aria-selected="true" data-on:click="@get('/tabs/date')">Until date</button>
+</div>
+<div id="tabpannel" class="card-inner" role="tabpanel">
+    <div class="picker">
+        <div class="until-group">
+            <input type="date" id="until-date" value="" data-bind:date>
+            <input type="time" id="until-time" value="12:00" data-bind:time>
+            <script>
+                document.getElementById('until-date').valueAsDate = new Date();
+                const defaultTime = new Date(Date.now() + 60 * 60 * 1000);
+                const timeDefaultValue = `${defaultTime.getHours().toString().padStart(2, '0')}:${defaultTime.getMinutes().toString().padStart(2, '0')}`
+                document.getElementById('until-time').value = timeDefaultValue;
+            </script>
+        </div>
+    </div>
+</div>
+<div id="gen-card" class="card-inner">
+    <button id="btn-gen" class="btn-gen"
+            data-signals="{ciphertext: '', iv: '', _key: ''}"
+            data-on:click="encryptSecret(el, $_secret)"
+            data-on:secretready="
+                $ciphertext = evt.detail.ciphertext;
+                $iv = evt.detail.iv;
+                $_key = evt.detail.key;
+                @post('/secret/date');
+            "
+    >Generate link</button>
+</div>

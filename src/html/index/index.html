@@ -1,0 +1,63 @@
+<main>
+    <h1 class="headline">Shared once.<br><em>Gone forever.</em></h1>
+
+    <div class="card">
+        <textarea
+                id="secret"
+                placeholder="Paste your password, key, or any sensitive text…"
+                data-bind:_secret
+        ></textarea>
+
+        <div id="firstview"></div>
+        <div id="tabs" role="tablist"></div>
+        <div id="tabpannel" role="tabpanel"></div>
+        <div id="gen-card" class="card-inner">
+            <button class="btn-gen" id="btn-gen" data-on:click="@get('/form')">Make link</button>
+        </div>
+        <div id="link-card" data-signals:secret-id="0" data-class:card-inner="$secretId">
+            <span id="link" class="link"
+                  data-show="$secretId"
+                  data-computed:_link="createLink(el, $secretId, $_key)"
+                  data-text="$_link"
+            ></span>
+            <button id="copy"
+                    data-show="$secretId"
+                    data-signals:_copy-btn-text="'Copy'"
+                    data-text="$_copyBtnText"
+                    data-on:click="copyLink(el, $_link)"
+                    data-on:copydone="$_copyBtnText = evt.detail.text"
+                    data-on:copydone__delay.3s="$_copyBtnText = 'Copy'"
+            ></button>
+        </div>
+    </div>
+</main>
+<script>
+    function createLink(el, secretId, key) {
+        return `${window.location.origin}/secret/${secretId}#${key}`;
+    }
+
+    async function copyLink(el, link) {
+        await navigator.clipboard.writeText(link)
+        el.dispatchEvent(new CustomEvent("copydone", {detail: {text: "Copied!"}}))
+    }
+
+    async function encryptSecret(el, plaintext) {
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+        const key = await crypto.subtle.generateKey({name: "AES-GCM", length: 256}, true, ["encrypt", "decrypt"]);
+        const [ciphertext, rawKey] = await Promise.all([
+            crypto.subtle.encrypt({name: "AES-GCM", iv}, key, new TextEncoder().encode(plaintext)),
+            crypto.subtle.exportKey("raw", key)
+        ]);
+        el.dispatchEvent(
+            new CustomEvent("secretready", {detail: {
+                ciphertext: toB64(ciphertext),
+                iv: toB64(iv),
+                key: toB64(rawKey),
+            }})
+        );
+    }
+
+    function toB64(buffer) {
+        return btoa(String.fromCharCode(...new Uint8Array(buffer)));
+    }
+</script>

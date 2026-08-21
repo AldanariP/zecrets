@@ -1,10 +1,14 @@
 .{
     .name = .zecrets,
-    .version = "0.15.2",
+    .version = "0.16.0",
     .dependencies = .{
-        .jetzig = .{
-            .url = "https://github.com/jetzig-framework/jetzig/archive/22ebb15a8e07eb4564b477a8fe717c4b923a4304.tar.gz",
-            .hash = "jetzig-0.0.0-IpAgLQkZEAAARa0zfLl4zGEapqhjxpKul8JGg1pdZJbl",
+        .datastar = .{
+            .url = "https://github.com/starfederation/datastar-zig/archive/c03f983d8b5f5796876f9428cd9bd28b8fe3daaf.tar.gz",
+            .hash = "datastar_sdk_zig-0.1.0-IRNEdhNOAAAqlQb7oJWLU9KnorucKkrZ3H3UFurQzUxs",
+        },
+        .httpz = .{
+            .url = "https://github.com/karlseguin/http.zig/archive/52eb187cff75e168316b44480cd9f0fae26a1c5e.tar.gz",
+            .hash = "httpz-0.0.0-PNVzrL3oCADwWVoScHt1fFGTRyZMJ_FYa9reFvHhqq8Y",
         },
     },
     .paths = .{""},

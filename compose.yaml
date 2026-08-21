@@ -1,15 +1,9 @@
 services:
-  valkey:
-    image: valkey/valkey:9.0.3-alpine
-    container_name: zecrets-valkey
-    restart: unless-stopped
-
   server:
     build: .
-    container_name: zecrets-jetzig
+    container_name: zecrets
+    environment:
+      - PORT=3000
     ports:
-      - "8080:8080"
-    env_file: ".env"
+      - "3000:3000"
     restart: unless-stopped
-    depends_on:
-      - valkey

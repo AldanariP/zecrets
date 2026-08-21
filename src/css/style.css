@@ -106,18 +106,11 @@ main {
         &.wide {max-width: 720px;}
 
         .card-inner {
-            height: 0;
-            border-top: none;
-            padding: 0;
+            height: auto;
+            padding: 10px 16px;
+            border-top: var(--line);
             transition: height .3s ease;
-            > * { display: none; }
-
-            &.open {
-                height: auto;
-                padding: 10px 16px;
-                border-top: var(--line);
-                > * {display: block;}
-            }
+            > * {display: block;}
         }
     }
 }

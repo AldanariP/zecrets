@@ -1,6 +1,5 @@
 zig-out/
-zig-cache/
-*.core
-.jetzig
 .zig-cache/
-.env
+zig-pkg
+
+.idea
